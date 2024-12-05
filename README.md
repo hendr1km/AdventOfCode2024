@@ -1,1 +1,1 @@
-## 2025 Advent of Code in go
+## 2024 Advent of Code in go
