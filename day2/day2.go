@@ -30,7 +30,7 @@ func main() {
 			countGood++
 		} else {
 			for i := 0; i < len(level); i++ {
-				adjLevel := []int{}
+				var adjLevel []int
 				adjLevel = append(adjLevel, level[:i]...)
 				adjLevel = append(adjLevel, level[i+1:]...)
 				errAdj := CheckLevel(adjLevel, inc)
