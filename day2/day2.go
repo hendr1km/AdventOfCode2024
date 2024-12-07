@@ -13,11 +13,9 @@ func main() {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	countErrors := 0
-	countLevels := 0
-	countErrorsAdj := 0
+	countGood := 0
+	countGoodAdj := 0
 	for scanner.Scan() {
-		countLevels += 1
 		row := strings.Fields(scanner.Text())
 
 		var level []int
@@ -27,20 +25,25 @@ func main() {
 		}
 
 		inc := CheckIncrease(level)
-		err, idx := CheckLevel(level, inc)
-		if err == true {
-			countErrors++
+		err := CheckLevel(level, inc)
+		if err == false {
+			countGood++
+		} else {
+			for i := 0; i < len(level); i++ {
+				adjLevel := []int{}
+				adjLevel = append(adjLevel, level[:i]...)
+				adjLevel = append(adjLevel, level[i+1:]...)
+				errAdj := CheckLevel(adjLevel, inc)
 
-			adjLevel := append(level[:idx], level[idx+1:]...)
-			errAdj, _ := CheckLevel(adjLevel, inc)
-			if errAdj == true {
-				countErrorsAdj++
+				if errAdj == false {
+					countGoodAdj++
+					break
+				}
 			}
 		}
 	}
-
-	fmt.Println(countLevels - countErrors)
-	fmt.Println(countLevels - countErrorsAdj)
+	fmt.Println(countGood)
+	fmt.Println(countGood + countGoodAdj)
 }
 
 func CheckIncrease(level []int) bool {
@@ -64,27 +67,23 @@ func CheckIncrease(level []int) bool {
 	return increase
 }
 
-func CheckLevel(level []int, inc bool) (bool, int) {
+func CheckLevel(level []int, inc bool) bool {
 	err := false
-	var idx int
 	for i := 1; i < len(level); i++ {
 		diff := level[i] - level[i-1]
 
 		if diff == 0 {
 			err = true
-			idx = i
 			break
 		}
 
 		if inc == true {
 			if diff > 3 {
 				err = true
-				idx = i
 				break
 			}
 			if diff < 0 {
 				err = true
-				idx = i
 				break
 			}
 		}
@@ -92,15 +91,13 @@ func CheckLevel(level []int, inc bool) (bool, int) {
 		if inc == false {
 			if diff < -3 {
 				err = true
-				idx = i
 				break
 			}
 			if diff > 0 {
 				err = true
-				idx = i
 				break
 			}
 		}
 	}
-	return err, idx
+	return err
 }
