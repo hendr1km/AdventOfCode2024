@@ -47,7 +47,6 @@ func Process(pattern string) int {
 }
 
 func Process2(pattern string) int {
-
 	file, _ := os.Open("data3.txt")
 	defer file.Close()
 	re := regexp.MustCompile(pattern)
